@@ -6,7 +6,6 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
-import org.spongepowered.api.service.economy.transaction.TransactionResult;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
@@ -16,41 +15,51 @@ import java.util.stream.Collectors;
 
 public class Raffle {
 
-    private final String NAME;
-
+    private String name;
+    private String cmd;
     private Instant drawTime;
 
     private int numTickets;
     private double ticketPrice;
     private int ticketLimit;
 
-    private String permNode;
-    private String cmd;
+    private boolean repeating;
+    private boolean roll;
 
-    private Boolean repeating;
+    private String permNode;
 
     private Text description;
 
     private Map<UUID, Integer> ticketMap;
     private int availableTickets;
 
-    public Raffle(String NAME, Instant drawTime, int numTickets, double ticketPrice, int ticketLimit, String permNode, String cmd, Boolean repeating) {
-        this.NAME = NAME;
+    public Raffle(String name,
+                  String cmd,
+                  Instant drawTime,
+                  int numTickets,
+                  double ticketPrice,
+                  int ticketLimit,
+                  boolean repeating,
+                  boolean roll,
+                  String permNode,
+                  Text description) {
+        this.name = name;
+        this.cmd = cmd;
         this.drawTime = drawTime;
         this.numTickets = numTickets;
         this.ticketPrice = ticketPrice;
         this.ticketLimit = ticketLimit;
-        this.permNode = permNode;
-        this.cmd = cmd;
         this.repeating = repeating;
+        this.roll = roll;
+        this.permNode = permNode;
+        this.description = description;
 
-        description = Text.EMPTY;
         ticketMap = new HashMap<>();
         availableTickets = numTickets;
     }
 
     public int getSoldTickets() {
-        return ticketMap.values().stream().reduce(Integer::sum).orElse(0);
+        return numTickets - availableTickets;
     }
 
     private ResultType econBuyTicket(UUID playerUUID, int amount) {
@@ -111,5 +120,53 @@ public class Raffle {
                         )
                 )
         );
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Instant getDrawTime() {
+        return drawTime;
+    }
+
+    public int getNumTickets() {
+        return numTickets;
+    }
+
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public int getTicketLimit() {
+        return ticketLimit;
+    }
+
+    public String getPermNode() {
+        return permNode;
+    }
+
+    public String getCmd() {
+        return cmd;
+    }
+
+    public boolean isRepeating() {
+        return repeating;
+    }
+
+    public boolean isRoll() {
+        return roll;
+    }
+
+    public Text getDescription() {
+        return description;
+    }
+
+    public Map<UUID, Integer> getTicketMap() {
+        return ticketMap;
+    }
+
+    public int getAvailableTickets() {
+        return availableTickets;
     }
 }
