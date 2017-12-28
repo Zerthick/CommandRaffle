@@ -9,7 +9,9 @@ import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ public class Raffle {
     private String name;
     private String cmd;
     private Instant drawTime;
+    private Duration drawDuration;
 
     private int numTickets;
     private double ticketPrice;
@@ -35,7 +38,7 @@ public class Raffle {
 
     public Raffle(String name,
                   String cmd,
-                  Instant drawTime,
+                  Duration drawDuration,
                   int numTickets,
                   double ticketPrice,
                   int ticketLimit,
@@ -45,7 +48,7 @@ public class Raffle {
                   Text description) {
         this.name = name;
         this.cmd = cmd;
-        this.drawTime = drawTime;
+        this.drawDuration = drawDuration;
         this.numTickets = numTickets;
         this.ticketPrice = ticketPrice;
         this.ticketLimit = ticketLimit;
@@ -56,6 +59,10 @@ public class Raffle {
 
         ticketMap = new HashMap<>();
         availableTickets = numTickets;
+    }
+
+    public void start() {
+        drawTime = Instant.now().plus(drawDuration.toMillis(), ChronoUnit.MILLIS);
     }
 
     public int getSoldTickets() {
@@ -124,6 +131,10 @@ public class Raffle {
 
     public String getName() {
         return name;
+    }
+
+    public Duration getDrawDuration() {
+        return drawDuration;
     }
 
     public Instant getDrawTime() {
