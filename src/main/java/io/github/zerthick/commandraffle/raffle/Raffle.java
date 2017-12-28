@@ -27,7 +27,6 @@ public class Raffle {
     private int ticketLimit;
 
     private boolean repeating;
-    private boolean roll;
 
     private String permNode;
 
@@ -43,7 +42,6 @@ public class Raffle {
                   double ticketPrice,
                   int ticketLimit,
                   boolean repeating,
-                  boolean roll,
                   String permNode,
                   Text description) {
         this.name = name;
@@ -53,16 +51,18 @@ public class Raffle {
         this.ticketPrice = ticketPrice;
         this.ticketLimit = ticketLimit;
         this.repeating = repeating;
-        this.roll = roll;
         this.permNode = permNode;
         this.description = description;
 
+        drawTime = Instant.now().plus(drawDuration.toMillis(), ChronoUnit.MILLIS);
         ticketMap = new HashMap<>();
         availableTickets = numTickets;
     }
 
-    public void start() {
+    public void reset() {
         drawTime = Instant.now().plus(drawDuration.toMillis(), ChronoUnit.MILLIS);
+        ticketMap = new HashMap<>();
+        availableTickets = numTickets;
     }
 
     public int getSoldTickets() {
@@ -163,10 +163,6 @@ public class Raffle {
 
     public boolean isRepeating() {
         return repeating;
-    }
-
-    public boolean isRoll() {
-        return roll;
     }
 
     public Text getDescription() {
