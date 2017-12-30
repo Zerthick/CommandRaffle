@@ -94,7 +94,7 @@ public class Raffle {
         UUID playerUUID = player.getUniqueId();
 
         if (!hasPermission(player)) {
-            throw new RaffleException("You don't have perm");
+            throw new RaffleException("You don't have permission to buy tickets from this raffle!");
         }
 
         if(availableTickets > 0) {
