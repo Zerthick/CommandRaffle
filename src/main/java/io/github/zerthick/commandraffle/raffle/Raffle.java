@@ -1,11 +1,13 @@
 package io.github.zerthick.commandraffle.raffle;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
@@ -74,10 +76,28 @@ public class Raffle {
         Account playerAccount = economyService.getOrCreateAccount(playerUUID).get();
 
         return playerAccount.withdraw(economyService.getDefaultCurrency(),
-                BigDecimal.valueOf(amount * ticketPrice), Cause.of(NamedCause.of("Raffle", this))).getResult();
+                BigDecimal.valueOf(amount * ticketPrice), Cause.builder().append(this).build(EventContext.empty())).getResult();
     }
 
-    public void buyTicket(UUID playerUUID, int amount) throws RaffleException {
+    public boolean hasPermission(Subject subject) {
+        return permNode.isEmpty() || subject.hasPermission(permNode);
+    }
+
+    public boolean hasTicket(Player player) {
+        return ticketMap.keySet().contains(player.getUniqueId());
+    }
+
+    public int getTicketCount(Player player) {
+        return ticketMap.getOrDefault(player.getUniqueId(), 0);
+    }
+
+    public void buyTicket(Player player, int amount) throws RaffleException {
+
+        UUID playerUUID = player.getUniqueId();
+
+        if (!hasPermission(player)) {
+            throw new RaffleException("You don't have perm");
+        }
 
         if(availableTickets > 0) {
             int boughtTickets = ticketMap.getOrDefault(playerUUID, 0);
@@ -123,7 +143,7 @@ public class Raffle {
                 .ifPresent(playerAccount ->
                         playerAccount.deposit(economyService.getDefaultCurrency(),
                                 BigDecimal.valueOf(v * ticketPrice),
-                                Cause.of(NamedCause.of("Raffle", this))
+                                Cause.builder().append(this).build(EventContext.empty())
                         )
                 )
         );
@@ -175,5 +195,9 @@ public class Raffle {
 
     public int getAvailableTickets() {
         return availableTickets;
+    }
+
+    public Set<UUID> getPlayerIDs() {
+        return ticketMap.keySet();
     }
 }

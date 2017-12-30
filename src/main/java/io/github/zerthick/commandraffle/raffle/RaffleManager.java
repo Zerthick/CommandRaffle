@@ -19,7 +19,7 @@ public class RaffleManager {
     }
 
     public Optional<Raffle> getRaffle(String name) {
-        return Optional.ofNullable(raffleMap.get(name));
+        return Optional.ofNullable(raffleMap.get(name.toUpperCase()));
     }
 
     public boolean isRaffle(String name) {
@@ -27,11 +27,11 @@ public class RaffleManager {
     }
 
     public void addRaffle(Raffle raffle) {
-        raffleMap.put(raffle.getName(), raffle);
+        raffleMap.put(raffle.getName().toUpperCase(), raffle);
     }
 
     public Optional<Raffle> removeRaffle(String name) {
-        return Optional.ofNullable(raffleMap.remove(name));
+        return Optional.ofNullable(raffleMap.remove(name.toUpperCase()));
     }
 
     public Collection<Raffle> getExpiredRaffles(Instant cutoff) {
