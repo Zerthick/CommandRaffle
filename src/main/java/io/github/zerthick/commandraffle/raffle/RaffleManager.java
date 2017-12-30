@@ -36,6 +36,6 @@ public class RaffleManager {
 
     public Collection<Raffle> getExpiredRaffles(Instant cutoff) {
         return raffleMap.values().stream()
-                .filter(r -> r.getDrawTime().isAfter(cutoff)).collect(Collectors.toList());
+                .filter(r -> cutoff.isAfter(r.getDrawTime())).collect(Collectors.toList());
     }
 }

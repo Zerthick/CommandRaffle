@@ -56,9 +56,7 @@ public class Raffle {
         this.permNode = permNode;
         this.description = description;
 
-        drawTime = Instant.now().plus(drawDuration.toMillis(), ChronoUnit.MILLIS);
-        ticketMap = new HashMap<>();
-        availableTickets = numTickets;
+        reset();
     }
 
     public void reset() {
@@ -103,7 +101,7 @@ public class Raffle {
             int boughtTickets = ticketMap.getOrDefault(playerUUID, 0);
             int totalTickets = boughtTickets + amount;
 
-            if(ticketLimit != -1 && totalTickets <= ticketLimit) {
+            if (ticketLimit == -1 || totalTickets <= ticketLimit) {
                 if(totalTickets <= availableTickets) {
                     if(econBuyTicket(playerUUID, amount) == ResultType.SUCCESS) {
                         ticketMap.put(playerUUID, totalTickets);

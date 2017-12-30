@@ -1,6 +1,7 @@
 package io.github.zerthick.commandraffle;
 
 import com.google.inject.Inject;
+import io.github.zerthick.commandraffle.cmd.CommandRegister;
 import io.github.zerthick.commandraffle.raffle.Raffle;
 import io.github.zerthick.commandraffle.raffle.RaffleManager;
 import io.github.zerthick.commandraffle.raffle.RaffleResult;
@@ -47,6 +48,8 @@ public class CommandRaffle {
 
         pluginConfig = new PluginConfig(null);
 
+        CommandRegister.registerCommands(this);
+
         Task.builder()
                 .interval(1, TimeUnit.MINUTES)
                 .execute(new RaffleUpdateTask())
@@ -60,6 +63,10 @@ public class CommandRaffle {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public PluginContainer getInstance() {
+        return instance;
     }
 
     public RaffleManager getRaffleManager() {

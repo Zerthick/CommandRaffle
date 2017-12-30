@@ -24,16 +24,14 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
 
         Optional<String> raffleNameOptional = args.getOne(CommandArgs.RAFFLE_NAME);
         Optional<String> raffleCmdOptional = args.getOne(CommandArgs.RAFFLE_CMD);
-        Optional<String> raffleDurationOptional = args.getOne(CommandArgs.RAFFLE_DURATION);
+        Optional<Duration> raffleDurationOptional = args.getOne(CommandArgs.RAFFLE_DURATION);
 
         if (raffleNameOptional.isPresent() &&
                 raffleCmdOptional.isPresent() &&
                 raffleDurationOptional.isPresent()) {
             String raffleName = raffleNameOptional.get();
             String raffleCmd = raffleCmdOptional.get();
-            String raffleDurationStr = raffleDurationOptional.get();
-
-            Duration duration = Duration.parse(raffleDurationStr);
+            Duration duration = raffleDurationOptional.get();
 
             if (duration.isNegative()) {
                 src.sendMessage(Text.of(TextColors.RED, "Raffle duration must not be negative!"));
@@ -44,12 +42,12 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
             double ticketPrice = (double) args.getOne(CommandArgs.RAFFLE_TICKET_PRICE).orElse(pluginConfig.getDefaultTicketPrice());
             int ticketLimit = (int) args.getOne(CommandArgs.RAFFLE_TICKET_LIMIT).orElse(-1);
 
-            boolean repeating = args.hasAny(CommandArgs.RAFFLE_REPEAT);
+            boolean repeating = args.hasAny("r");
 
             String permNode = (String) args.getOne(CommandArgs.RAFFLE_PERM).orElse("");
 
             Text description = TextSerializers.FORMATTING_CODE.deserialize(
-                    (String) args.getOne(CommandArgs.RAFFLE_DESC).orElse(""));
+                    (String) args.getOne(CommandArgs.RAFFLE_DESC).orElse(raffleCmd));
 
             if (raffleManager.isRaffle(raffleName)) {
                 src.sendMessage(Text.of(TextColors.RED, "A raffle with the name ", raffleName, " already exists!"));

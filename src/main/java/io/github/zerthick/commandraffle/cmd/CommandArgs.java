@@ -33,6 +33,5 @@ public class CommandArgs {
     public static final LiteralText RAFFLE_TICKET_AMOUNT = Text.of("RaffleTicketAmount");
     public static final LiteralText RAFFLE_PERM = Text.of("RafflePerm");
     public static final LiteralText RAFFLE_DESC = Text.of("RaffleDesc");
-    public static final LiteralText RAFFLE_REPEAT = Text.of("r");
 
 }

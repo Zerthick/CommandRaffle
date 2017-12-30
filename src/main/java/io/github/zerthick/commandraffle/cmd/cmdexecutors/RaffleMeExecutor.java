@@ -30,7 +30,7 @@ public class RaffleMeExecutor extends AbstractCmdExecutor {
                     .filter(raffle -> raffle.hasTicket(player))
                     .map(raffle -> {
                         Text titleText = Text.builder()
-                                .append(Text.of(TextColors.YELLOW, raffle.getName()))
+                                .append(Text.of(TextColors.GOLD, raffle.getName()))
                                 .onHover(TextActions.showText(raffle.getDescription()))
                                 .build();
                         Text ticketsText = Text.of(raffle.getTicketCount(player));
