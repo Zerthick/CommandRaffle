@@ -47,10 +47,10 @@ public class RaffleListExecutor extends AbstractCmdExecutor {
                 }).collect(Collectors.toList());
 
         PaginationList list = PaginationList.builder()
-                .title(Text.of("Raffles"))
-                .header(Text.of("Name | Available Tickets/Ticket Price | Draw Time"))
+                .title(Text.of(TextColors.GOLD, ".oO Raffles Oo."))
+                .header(Text.of(TextColors.YELLOW, "Name | Available Tickets/Ticket Price | Draw Time", Text.NEW_LINE))
                 .contents(content)
-                .padding(Text.of("`"))
+                .padding(Text.of("_"))
                 .build();
 
         list.sendTo(src);

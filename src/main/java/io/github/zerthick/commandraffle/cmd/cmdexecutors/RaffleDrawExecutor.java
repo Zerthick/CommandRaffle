@@ -25,11 +25,16 @@ public class RaffleDrawExecutor extends AbstractCmdExecutor {
 
         if (raffleNameOptional.isPresent()) {
             String raffleName = raffleNameOptional.get();
-            Optional<Raffle> raffleOptional = raffleManager.removeRaffle(raffleName);
+            Optional<Raffle> raffleOptional = raffleManager.getRaffle(raffleName);
             if (raffleOptional.isPresent()) {
                 Raffle raffle = raffleOptional.get();
                 RaffleResult raffleResult = raffle.draw();
                 plugin.processRaffleResult(raffle, raffleResult);
+                if (raffle.isRepeating()) {
+                    raffle.reset();
+                } else {
+                    raffleManager.removeRaffle(raffleName);
+                }
                 src.sendMessage(Text.of(TextColors.YELLOW, raffleName, " has been drawn!"));
             } else {
                 src.sendMessage(Text.of(TextColors.RED, raffleName, " is not a raffle!"));
