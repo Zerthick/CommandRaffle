@@ -29,7 +29,7 @@ public class RaffleDrawExecutor extends AbstractCmdExecutor {
             if (raffleOptional.isPresent()) {
                 Raffle raffle = raffleOptional.get();
                 RaffleResult raffleResult = raffle.draw();
-                plugin.processRaffleResult(raffle, raffleResult);
+                plugin.processRaffleResult(raffleResult);
                 if (raffle.isRepeating()) {
                     raffle.reset();
                 } else {

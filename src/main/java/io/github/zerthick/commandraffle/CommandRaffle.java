@@ -77,8 +77,9 @@ public class CommandRaffle {
         return pluginConfig;
     }
 
-    public void processRaffleResult(Raffle raffle, RaffleResult raffleResult) {
+    public void processRaffleResult(RaffleResult raffleResult) {
         Optional<UUID> winnerOptional = raffleResult.getWinner();
+        Raffle raffle = raffleResult.getRaffle();
         if (winnerOptional.isPresent()) {
             UUID winnerUUID = winnerOptional.get();
             UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
@@ -114,7 +115,7 @@ public class CommandRaffle {
             Collection<Raffle> expiredRaffles = new ArrayList<>(raffleManager.getExpiredRaffles(Instant.now()));
             expiredRaffles.forEach(r -> {
                 RaffleResult result = r.draw();
-                processRaffleResult(r, result);
+                processRaffleResult(result);
                 if (r.isRepeating()) {
                     r.reset();
                 } else {
