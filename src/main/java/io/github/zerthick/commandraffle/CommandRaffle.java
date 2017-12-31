@@ -5,19 +5,17 @@ import io.github.zerthick.commandraffle.cmd.CommandRegister;
 import io.github.zerthick.commandraffle.raffle.Raffle;
 import io.github.zerthick.commandraffle.raffle.RaffleManager;
 import io.github.zerthick.commandraffle.raffle.RaffleResult;
+import io.github.zerthick.commandraffle.util.config.ConfigManager;
 import io.github.zerthick.commandraffle.util.config.PluginConfig;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppedServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -26,7 +24,6 @@ import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
@@ -61,31 +58,16 @@ public class CommandRaffle {
 
     @Listener
     public void onGameInit(GameInitializationEvent event) {
-        ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(defaultConfig).build();
 
-        //Generate default config if it doesn't exist
-        if (!defaultConfig.toFile().exists()) {
-            Asset defaultConfigAsset = getInstance().getAsset("DefaultConfig.conf").get();
-            try {
-                defaultConfigAsset.copyToFile(defaultConfig);
-                configLoader.save(configLoader.load());
-            } catch (IOException e) {
-                logger.warn("Error loading default config! Error: " + e.getMessage());
-            }
-        }
+        ConfigManager.registerSerializers();
 
-        try {
-            CommentedConfigurationNode configNode = configLoader.load();
-            pluginConfig = new PluginConfig(configNode);
-        } catch (IOException e) {
-            logger.warn("Error loading config! Error: " + e.getMessage());
-        }
+        pluginConfig = ConfigManager.loadPluginConfig(this);
+        rewardCache = ConfigManager.loadRewardCache(this);
+        raffleManager = ConfigManager.loadRaffleManager(this);
     }
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        raffleManager = new RaffleManager(new HashMap<>());
-        rewardCache = new RewardCache(new HashMap<>());
 
         CommandRegister.registerCommands(this);
 
@@ -109,6 +91,12 @@ public class CommandRaffle {
                 ));
     }
 
+    @Listener
+    public void onServerStop(GameStoppedServerEvent event) {
+        ConfigManager.saveRewardCache(this);
+        ConfigManager.saveRaffleManager(this);
+    }
+
     public Logger getLogger() {
         return logger;
     }
@@ -123,6 +111,18 @@ public class CommandRaffle {
 
     public PluginConfig getPluginConfig() {
         return pluginConfig;
+    }
+
+    public Path getDefaultConfig() {
+        return defaultConfig;
+    }
+
+    public Path getDefaultConfigDir() {
+        return defaultConfigDir;
+    }
+
+    public RewardCache getRewardCache() {
+        return rewardCache;
     }
 
     public void processRaffleResult(RaffleResult raffleResult) {

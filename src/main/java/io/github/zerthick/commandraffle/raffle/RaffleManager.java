@@ -42,4 +42,8 @@ public class RaffleManager {
         return raffleMap.values().stream()
                 .filter(r -> cutoff.isAfter(r.getDrawTime())).collect(Collectors.toList());
     }
+
+    public Map<String, Raffle> getRaffleMap() {
+        return raffleMap;
+    }
 }

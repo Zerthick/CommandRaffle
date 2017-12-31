@@ -39,6 +39,32 @@ public class Raffle {
 
     public Raffle(String name,
                   String cmd,
+                  Instant drawTime,
+                  Duration drawDuration,
+                  int numTickets,
+                  double ticketPrice,
+                  int ticketLimit,
+                  boolean repeating,
+                  String permNode,
+                  Text description,
+                  Map<UUID, Integer> ticketMap,
+                  int availableTickets) {
+        this.name = name;
+        this.cmd = cmd;
+        this.drawTime = drawTime;
+        this.drawDuration = drawDuration;
+        this.numTickets = numTickets;
+        this.ticketPrice = ticketPrice;
+        this.ticketLimit = ticketLimit;
+        this.repeating = repeating;
+        this.permNode = permNode;
+        this.description = description;
+        this.ticketMap = ticketMap;
+        this.availableTickets = availableTickets;
+    }
+
+    public Raffle(String name,
+                  String cmd,
                   Duration drawDuration,
                   int numTickets,
                   double ticketPrice,
