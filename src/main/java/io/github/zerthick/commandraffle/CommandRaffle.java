@@ -104,10 +104,19 @@ public class CommandRaffle {
                     rewardCache.pushReward(winnerUUID, command);
                 }
 
-                fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(Text.of(TextColors.YELLOW,
-                        "The winner of the ", TextColors.GOLD, raffle.getName(),
-                        TextColors.YELLOW, " raffle is ", TextColors.GOLD, user.getName(),
-                        TextColors.YELLOW, "!")));
+                fetchOnlineRafflePlayers(raffle).forEach(player -> {
+
+                    if (player.getUniqueId().equals(winnerUUID)) {
+                        player.sendMessage(Text.of(TextColors.YELLOW,
+                                "You won the ", TextColors.GOLD, raffle.getName(),
+                                TextColors.YELLOW, " raffle!"));
+                    } else {
+                        player.sendMessage(Text.of(TextColors.YELLOW,
+                                "The winner of the ", TextColors.GOLD, raffle.getName(),
+                                TextColors.YELLOW, " raffle is ", TextColors.GOLD, user.getName(),
+                                TextColors.YELLOW, "!"));
+                    }
+                });
             });
         } else {
             fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(Text.of(TextColors.YELLOW,
