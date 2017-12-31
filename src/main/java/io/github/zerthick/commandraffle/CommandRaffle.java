@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
@@ -40,11 +41,13 @@ public class CommandRaffle {
     private PluginContainer instance;
 
     private RaffleManager raffleManager;
+    private RewardCache rewardCache;
     private PluginConfig pluginConfig;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         raffleManager = new RaffleManager(new HashMap<>());
+        rewardCache = new RewardCache(new HashMap<>());
 
         pluginConfig = new PluginConfig(null);
 
@@ -59,6 +62,15 @@ public class CommandRaffle {
         logger.info(
                 instance.getName() + " version " + instance.getVersion().orElse("")
                         + " enabled!");
+    }
+
+    @Listener
+    public void onPlayerJoin(ClientConnectionEvent.Join event) {
+        Player player = event.getTargetEntity();
+        rewardCache.fetchRewards(player.getUniqueId())
+                .ifPresent(cmdlist -> cmdlist.forEach(cmd ->
+                        Sponge.getCommandManager().process(Sponge.getServer().getConsole(), cmd)
+                ));
     }
 
     public Logger getLogger() {
@@ -85,7 +97,13 @@ public class CommandRaffle {
             UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
             userStorageService.get(winnerUUID).ifPresent(user -> {
                 String command = raffle.getCmd().replaceAll("\\{Winner\\}", user.getName());
-                Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command);
+
+                if (user.isOnline()) {
+                    Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command);
+                } else {
+                    rewardCache.pushReward(winnerUUID, command);
+                }
+
                 fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(Text.of(TextColors.YELLOW,
                         "The winner of the ", TextColors.GOLD, raffle.getName(),
                         TextColors.YELLOW, " raffle is ", TextColors.GOLD, user.getName(),

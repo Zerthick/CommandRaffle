@@ -129,9 +129,9 @@ public class Raffle {
         String winner = tickets.get(0);
 
         if(winner.isEmpty()) {
-            return new RaffleResult();
+            return new RaffleResult(this);
         } else {
-            return new RaffleResult(UUID.fromString(winner));
+            return new RaffleResult(this, UUID.fromString(winner));
         }
     }
 
