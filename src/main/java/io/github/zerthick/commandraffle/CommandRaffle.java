@@ -6,10 +6,17 @@ import io.github.zerthick.commandraffle.raffle.Raffle;
 import io.github.zerthick.commandraffle.raffle.RaffleManager;
 import io.github.zerthick.commandraffle.raffle.RaffleResult;
 import io.github.zerthick.commandraffle.util.config.PluginConfig;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.asset.Asset;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -19,6 +26,8 @@ import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -39,17 +48,44 @@ public class CommandRaffle {
     private Logger logger;
     @Inject
     private PluginContainer instance;
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private Path defaultConfig;
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    private Path defaultConfigDir;
 
     private RaffleManager raffleManager;
     private RewardCache rewardCache;
     private PluginConfig pluginConfig;
 
     @Listener
+    public void onGameInit(GameInitializationEvent event) {
+        ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(defaultConfig).build();
+
+        //Generate default config if it doesn't exist
+        if (!defaultConfig.toFile().exists()) {
+            Asset defaultConfigAsset = getInstance().getAsset("DefaultConfig.conf").get();
+            try {
+                defaultConfigAsset.copyToFile(defaultConfig);
+                configLoader.save(configLoader.load());
+            } catch (IOException e) {
+                logger.warn("Error loading default config! Error: " + e.getMessage());
+            }
+        }
+
+        try {
+            CommentedConfigurationNode configNode = configLoader.load();
+            pluginConfig = new PluginConfig(configNode);
+        } catch (IOException e) {
+            logger.warn("Error loading config! Error: " + e.getMessage());
+        }
+    }
+
+    @Listener
     public void onServerStart(GameStartedServerEvent event) {
         raffleManager = new RaffleManager(new HashMap<>());
         rewardCache = new RewardCache(new HashMap<>());
-
-        pluginConfig = new PluginConfig(null);
 
         CommandRegister.registerCommands(this);
 

@@ -1,9 +1,7 @@
 package io.github.zerthick.commandraffle.raffle;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RaffleManager {
@@ -16,6 +14,12 @@ public class RaffleManager {
 
     public Collection<Raffle> getRaffles() {
         return raffleMap.values();
+    }
+
+    public SortedSet<Raffle> getSortedRaffles(Comparator<Raffle> comparator) {
+        SortedSet<Raffle> sortedSet = new TreeSet<>(comparator);
+        sortedSet.addAll(getRaffles());
+        return sortedSet;
     }
 
     public Optional<Raffle> getRaffle(String name) {

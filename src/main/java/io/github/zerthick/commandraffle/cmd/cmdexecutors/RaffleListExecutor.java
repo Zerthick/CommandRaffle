@@ -2,7 +2,7 @@ package io.github.zerthick.commandraffle.cmd.cmdexecutors;
 
 import io.github.zerthick.commandraffle.CommandRaffle;
 import io.github.zerthick.commandraffle.raffle.Raffle;
-import org.apache.commons.lang3.time.DurationFormatUtils;
+import io.github.zerthick.commandraffle.util.RaffleTimeFormatter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -15,8 +15,8 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class RaffleListExecutor extends AbstractCmdExecutor {
         Currency dc = economyService.getDefaultCurrency();
 
         Instant now = Instant.now();
-        List<Text> content = raffleManager.getRaffles().stream()
+        List<Text> content = raffleManager.getSortedRaffles(Comparator.comparing(Raffle::getDrawTime)).stream()
                 .filter(raffle -> raffle.hasPermission(src))
                 .map(raffle -> {
                     Text titleText = Text.builder()
@@ -41,7 +41,7 @@ public class RaffleListExecutor extends AbstractCmdExecutor {
                             .onHover(TextActions.showText(raffle.getDescription()))
                             .build();
                     Text ticketsText = Text.of(raffle.getAvailableTickets(), " at ", dc.format(BigDecimal.valueOf(raffle.getTicketPrice())), "/ticket");
-                    Text timeText = formatTimeText(raffle, now);
+                    Text timeText = RaffleTimeFormatter.formatTimeText(raffle, now);
 
                     return Text.of(titleText, "  ", ticketsText, "  ", timeText);
                 }).collect(Collectors.toList());
@@ -56,17 +56,5 @@ public class RaffleListExecutor extends AbstractCmdExecutor {
         list.sendTo(src);
 
         return CommandResult.success();
-    }
-
-    private Text formatTimeText(Raffle raffle, Instant now) {
-
-        Instant drawTime = raffle.getDrawTime();
-
-        if (drawTime.isAfter(now)) {
-            Duration duration = Duration.between(now, drawTime);
-            return Text.of(DurationFormatUtils.formatDurationWords(duration.toMillis(), true, true));
-        }
-
-        return Text.of("Any Minute!");
     }
 }

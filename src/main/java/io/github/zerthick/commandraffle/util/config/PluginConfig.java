@@ -4,16 +4,21 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 public class PluginConfig {
 
-    public PluginConfig(ConfigurationNode node) {
+    private int defaultNumTickets;
+    private double defaultTicketPrice;
 
+    public PluginConfig(ConfigurationNode node) {
+        ConfigurationNode raffleDefaultsNode = node.getNode("RaffleDefaults");
+        defaultNumTickets = raffleDefaultsNode.getNode("NumberOfTickets").getInt();
+        defaultTicketPrice = raffleDefaultsNode.getNode("TicketPrice").getDouble();
     }
 
 
     public int getDefaultNumTickets() {
-        return 100;
+        return defaultNumTickets;
     }
 
     public double getDefaultTicketPrice() {
-        return 10.0;
+        return defaultTicketPrice;
     }
 }

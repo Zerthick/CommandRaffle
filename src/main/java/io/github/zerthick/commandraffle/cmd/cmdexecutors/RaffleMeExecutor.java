@@ -1,6 +1,8 @@
 package io.github.zerthick.commandraffle.cmd.cmdexecutors;
 
 import io.github.zerthick.commandraffle.CommandRaffle;
+import io.github.zerthick.commandraffle.raffle.Raffle;
+import io.github.zerthick.commandraffle.util.RaffleTimeFormatter;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -10,6 +12,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +30,8 @@ public class RaffleMeExecutor extends AbstractCmdExecutor {
 
             Player player = (Player) src;
 
-            List<Text> content = raffleManager.getRaffles().stream()
+            Instant now = Instant.now();
+            List<Text> content = raffleManager.getSortedRaffles(Comparator.comparing(Raffle::getDrawTime)).stream()
                     .filter(raffle -> raffle.hasTicket(player))
                     .map(raffle -> {
                         Text titleText = Text.builder()
@@ -35,12 +40,14 @@ public class RaffleMeExecutor extends AbstractCmdExecutor {
                                 .build();
                         Text ticketsText = Text.of(raffle.getTicketCount(player));
 
-                        return Text.of(titleText, "  ", ticketsText);
+                        Text timeText = RaffleTimeFormatter.formatTimeText(raffle, now);
+
+                        return Text.of(titleText, "  ", ticketsText, "  ", timeText);
                     }).collect(Collectors.toList());
 
             PaginationList list = PaginationList.builder()
                     .title(Text.of(TextColors.GOLD, ".oO Raffles Oo."))
-                    .header(Text.of(TextColors.YELLOW, "Name | Bought Tickets", Text.NEW_LINE))
+                    .header(Text.of(TextColors.YELLOW, "Name | Bought Tickets | Draw Time", Text.NEW_LINE))
                     .contents(content)
                     .padding(Text.of("_"))
                     .build();
