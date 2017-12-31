@@ -33,6 +33,10 @@ public class RaffleBuyExecutor extends AbstractCmdExecutor {
                 String raffleName = raffleNameOptional.get();
                 int ticketAmount = ticketAmountOptional.get();
 
+                if (ticketAmount <= 0) {
+                    throw new CommandException(Text.of("Ticket amount must be positive!"));
+                }
+
                 Optional<Raffle> raffleOptional = raffleManager.getRaffle(raffleName);
                 if (raffleOptional.isPresent()) {
                     Raffle raffle = raffleOptional.get();

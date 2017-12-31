@@ -3,6 +3,7 @@ package io.github.zerthick.commandraffle.cmd.cmdexecutors;
 import io.github.zerthick.commandraffle.CommandRaffle;
 import io.github.zerthick.commandraffle.cmd.CommandArgs;
 import io.github.zerthick.commandraffle.raffle.Raffle;
+import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -20,7 +21,7 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
     }
 
     @Override
-    public CommandResult execute(CommandSource src, CommandContext args) {
+    public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 
         Optional<String> raffleNameOptional = args.getOne(CommandArgs.RAFFLE_NAME);
         Optional<String> raffleCmdOptional = args.getOne(CommandArgs.RAFFLE_CMD);
@@ -41,6 +42,16 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
             int numTickets = (int) args.getOne(CommandArgs.RAFFLE_NUM_TICKETS).orElse(pluginConfig.getDefaultNumTickets());
             double ticketPrice = (double) args.getOne(CommandArgs.RAFFLE_TICKET_PRICE).orElse(pluginConfig.getDefaultTicketPrice());
             int ticketLimit = (int) args.getOne(CommandArgs.RAFFLE_TICKET_LIMIT).orElse(-1);
+
+            if (numTickets <= 0) {
+                throw new CommandException(Text.of("Ticket amount must be positive!"));
+            }
+            if (ticketPrice <= 0) {
+                throw new CommandException(Text.of("Ticket price must be positive!"));
+            }
+            if (ticketLimit != -1 && ticketLimit <= 0) {
+                throw new CommandException(Text.of("Ticket limit must be positive!"));
+            }
 
             boolean repeating = args.hasAny("r");
 
