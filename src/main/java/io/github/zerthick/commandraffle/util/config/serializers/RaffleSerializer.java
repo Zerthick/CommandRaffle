@@ -26,7 +26,6 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.util.TypeTokens;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -44,7 +43,7 @@ public class RaffleSerializer implements TypeSerializer<Raffle> {
 
         String name = value.getNode("name").getString();
         String cmd = value.getNode("cmd").getString();
-        Instant drawTime = Instant.ofEpochMilli(value.getNode("drawTime").getValue(TypeTokens.LONG_TOKEN));
+        Instant drawTime = Instant.ofEpochMilli(value.getNode("drawTime").getValue(TypeToken.of(Long.class)));
         Duration drawDuration = Duration.ofMillis(value.getNode("drawDuration").getLong());
 
         int numTickets = value.getNode("numTickets").getInt();
@@ -55,7 +54,7 @@ public class RaffleSerializer implements TypeSerializer<Raffle> {
 
         String permNode = value.getNode("permNode").getString("");
 
-        Text description = value.getNode("description").getValue(TypeTokens.TEXT_TOKEN);
+        Text description = value.getNode("description").getValue(TypeToken.of(Text.class));
 
         Map<UUID, Integer> ticketMap = value.getNode("ticketMap").getValue(new TypeToken<Map<UUID, Integer>>() {
         });
@@ -79,24 +78,24 @@ public class RaffleSerializer implements TypeSerializer<Raffle> {
     @Override
     public void serialize(TypeToken<?> type, Raffle obj, ConfigurationNode value) throws ObjectMappingException {
 
-        value.getNode("name").setValue(TypeTokens.STRING_TOKEN, obj.getName());
-        value.getNode("cmd").setValue(TypeTokens.STRING_TOKEN, obj.getCmd());
-        value.getNode("drawTime").setValue(TypeTokens.LONG_TOKEN, obj.getDrawTime().toEpochMilli());
-        value.getNode("drawDuration").setValue(TypeTokens.LONG_TOKEN, obj.getDrawDuration().toMillis());
+        value.getNode("name").setValue(TypeToken.of(String.class), obj.getName());
+        value.getNode("cmd").setValue(TypeToken.of(String.class), obj.getCmd());
+        value.getNode("drawTime").setValue(TypeToken.of(Long.class), obj.getDrawTime().toEpochMilli());
+        value.getNode("drawDuration").setValue(TypeToken.of(Long.class), obj.getDrawDuration().toMillis());
 
-        value.getNode("numTickets").setValue(TypeTokens.INTEGER_TOKEN, obj.getNumTickets());
-        value.getNode("ticketPrice").setValue(TypeTokens.DOUBLE_TOKEN, obj.getTicketPrice());
-        value.getNode("ticketLimit").setValue(TypeTokens.INTEGER_TOKEN, obj.getTicketLimit());
+        value.getNode("numTickets").setValue(TypeToken.of(Integer.class), obj.getNumTickets());
+        value.getNode("ticketPrice").setValue(TypeToken.of(Double.class), obj.getTicketPrice());
+        value.getNode("ticketLimit").setValue(TypeToken.of(Integer.class), obj.getTicketLimit());
 
-        value.getNode("repeating").setValue(TypeTokens.BOOLEAN_TOKEN, obj.isRepeating());
+        value.getNode("repeating").setValue(TypeToken.of(Boolean.class), obj.isRepeating());
 
-        value.getNode("permNode").setValue(TypeTokens.STRING_TOKEN, obj.getPermNode());
+        value.getNode("permNode").setValue(TypeToken.of(String.class), obj.getPermNode());
 
-        value.getNode("description").setValue(TypeTokens.TEXT_TOKEN, obj.getDescription());
+        value.getNode("description").setValue(TypeToken.of(Text.class), obj.getDescription());
 
         value.getNode("ticketMap").setValue(new TypeToken<Map<UUID, Integer>>() {
         }, obj.getTicketMap());
-        value.getNode("availableTickets").setValue(TypeTokens.INTEGER_TOKEN, obj.getAvailableTickets());
+        value.getNode("availableTickets").setValue(TypeToken.of(Integer.class), obj.getAvailableTickets());
 
     }
 }

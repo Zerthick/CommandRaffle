@@ -22,7 +22,7 @@ package io.github.zerthick.commandraffle.raffle;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -119,7 +119,7 @@ public class Raffle {
         Account playerAccount = economyService.getOrCreateAccount(playerUUID).get();
 
         return playerAccount.withdraw(economyService.getDefaultCurrency(),
-                BigDecimal.valueOf(amount * ticketPrice), Cause.builder().append(this).build(EventContext.empty())).getResult();
+                BigDecimal.valueOf(amount * ticketPrice), Cause.of(NamedCause.owner(this))).getResult();
     }
 
     public boolean hasPermission(Subject subject) {
@@ -186,7 +186,7 @@ public class Raffle {
                 .ifPresent(playerAccount ->
                         playerAccount.deposit(economyService.getDefaultCurrency(),
                                 BigDecimal.valueOf(v * ticketPrice),
-                                Cause.builder().append(this).build(EventContext.empty())
+                                Cause.of(NamedCause.owner(this))
                         )
                 )
         );

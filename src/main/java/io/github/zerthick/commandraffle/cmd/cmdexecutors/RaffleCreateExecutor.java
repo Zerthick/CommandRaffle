@@ -31,6 +31,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 public class RaffleCreateExecutor extends AbstractCmdExecutor {
@@ -44,14 +45,14 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
 
         Optional<String> raffleNameOptional = args.getOne(CommandArgs.RAFFLE_NAME);
         Optional<String> raffleCmdOptional = args.getOne(CommandArgs.RAFFLE_CMD);
-        Optional<Duration> raffleDurationOptional = args.getOne(CommandArgs.RAFFLE_DURATION);
+        Optional<String> raffleDurationOptional = args.getOne(CommandArgs.RAFFLE_DURATION);
 
         if (raffleNameOptional.isPresent() &&
                 raffleCmdOptional.isPresent() &&
                 raffleDurationOptional.isPresent()) {
             String raffleName = raffleNameOptional.get();
             String raffleCmd = raffleCmdOptional.get();
-            Duration duration = raffleDurationOptional.get();
+            Duration duration = parseDuration(raffleDurationOptional.get());
 
             if (duration.isNegative()) {
                 src.sendMessage(Text.of(TextColors.RED, "Raffle duration must not be negative!"));
@@ -89,5 +90,29 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
         }
 
         return CommandResult.success();
+    }
+
+    private Duration parseDuration(String s) throws CommandException {
+        if (!s.contains("T")) {
+            if (s.contains("D")) {
+                if (s.contains("H") || s.contains("M") || s.contains("S")) {
+                    s = s.replace("D", "DT");
+                }
+            } else {
+                if (s.startsWith("P")) {
+                    s = "PT" + s.substring(1);
+                } else {
+                    s = "T" + s;
+                }
+            }
+        }
+        if (!s.startsWith("P")) {
+            s = "P" + s;
+        }
+        try {
+            return Duration.parse(s);
+        } catch (DateTimeParseException ex) {
+            throw new CommandException(Text.of("Invalid duration!"));
+        }
     }
 }
