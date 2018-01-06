@@ -35,7 +35,7 @@ public class CommandRegister {
                 .arguments(GenericArguments.flags()
                         .flag("r", "-repeat")
                         .valueFlag(GenericArguments.integer(CommandArgs.RAFFLE_NUM_TICKETS), "n", "-numtickets")
-                        .valueFlag(GenericArguments.doubleNum(CommandArgs.RAFFLE_TICKET_PRICE), "p", "-ticketprice")
+                        .valueFlag(GenericArguments.doubleNum(CommandArgs.RAFFLE_TICKET_PRICE), "c", "-ticketcost")
                         .valueFlag(GenericArguments.integer(CommandArgs.RAFFLE_TICKET_LIMIT), "l", "-ticketlimit")
                         .valueFlag(GenericArguments.string(CommandArgs.RAFFLE_PERM), "p", "-perm")
                         .valueFlag(GenericArguments.string(CommandArgs.RAFFLE_DESC), "d", "-desc")
