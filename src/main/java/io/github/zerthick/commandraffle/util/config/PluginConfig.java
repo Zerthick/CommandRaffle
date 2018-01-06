@@ -34,7 +34,7 @@ public class PluginConfig {
     public PluginConfig(ConfigurationNode node) {
         ConfigurationNode raffleDefaultsNode = node.getNode("RaffleDefaults");
         defaultNumTickets = raffleDefaultsNode.getNode("NumberOfTickets").getInt();
-        defaultTicketPrice = raffleDefaultsNode.getNode("TicketPrice").getDouble();
+        defaultTicketPrice = raffleDefaultsNode.getNode("TicketCost").getDouble();
 
         broadcastWinner = node.getNode("BroadcastWinner").getBoolean();
 
