@@ -22,6 +22,7 @@ package io.github.zerthick.commandraffle.cmd.cmdexecutors;
 import io.github.zerthick.commandraffle.CommandRaffle;
 import io.github.zerthick.commandraffle.cmd.CommandArgs;
 import io.github.zerthick.commandraffle.raffle.Raffle;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -84,7 +85,13 @@ public class RaffleCreateExecutor extends AbstractCmdExecutor {
             } else {
                 Raffle newRaffle = new Raffle(raffleName, raffleCmd, duration, numTickets, ticketPrice, ticketLimit, repeating, permNode, description);
                 raffleManager.addRaffle(newRaffle);
+
                 src.sendMessage(Text.of(TextColors.YELLOW, raffleName, " raffle created!"));
+
+                Text createBroadCast = plugin.buildRaffleCreateMsg(newRaffle);
+                if(!createBroadCast.isEmpty()) {
+                    Sponge.getServer().getBroadcastChannel().send(plugin.getInstance(), createBroadCast);
+                }
             }
         }
 

@@ -56,12 +56,13 @@ public class RaffleMeExecutor extends AbstractCmdExecutor {
                         Text titleText = Text.builder()
                                 .append(Text.of(TextColors.GOLD, raffle.getName()))
                                 .onHover(TextActions.showText(raffle.getDescription()))
+                                .onShiftClick(TextActions.insertText("/raffle buy " + raffle.getName() + " "))
                                 .build();
                         Text ticketsText = Text.of(raffle.getTicketCount(player));
 
                         Text timeText = RaffleTimeFormatter.formatTimeText(raffle, now);
 
-                        return Text.of(titleText, "  ", ticketsText, "  ", timeText);
+                        return Text.of(titleText, " - ", ticketsText, " - ", timeText);
                     }).collect(Collectors.toList());
 
             PaginationList list = PaginationList.builder()

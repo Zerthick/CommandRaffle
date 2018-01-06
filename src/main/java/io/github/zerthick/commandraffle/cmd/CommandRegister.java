@@ -66,6 +66,7 @@ public class CommandRegister {
         CommandSpec list = CommandSpec.builder()
                 .permission("commandraffle.command.list")
                 .executor(new RaffleListExecutor(plugin))
+                .arguments(GenericArguments.optional(GenericArguments.string(CommandArgs.RAFFLE_NAME)))
                 .build();
 
         CommandSpec me = CommandSpec.builder()

@@ -41,7 +41,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -150,7 +150,7 @@ public class CommandRaffle {
             UUID winnerUUID = winnerOptional.get();
             UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
             userStorageService.get(winnerUUID).ifPresent(user -> {
-                String command = raffle.getCmd().replaceAll("\\{Winner\\}", user.getName());
+                String command = raffle.getCmd().replaceAll("\\{Winner}", user.getName());
 
                 if (user.isOnline()) {
                     Sponge.getCommandManager().process(Sponge.getServer().getConsole(), command);
@@ -158,24 +158,23 @@ public class CommandRaffle {
                     rewardCache.pushReward(winnerUUID, command);
                 }
 
-                fetchOnlineRafflePlayers(raffle).forEach(player -> {
+                Text winnerText = buildRaffleWinnerMsg(raffleResult);
 
-                    if (player.getUniqueId().equals(winnerUUID)) {
-                        player.sendMessage(Text.of(TextColors.YELLOW,
-                                "You won the ", TextColors.GOLD, raffle.getName(),
-                                TextColors.YELLOW, " raffle!"));
-                    } else {
-                        player.sendMessage(Text.of(TextColors.YELLOW,
-                                "The winner of the ", TextColors.GOLD, raffle.getName(),
-                                TextColors.YELLOW, " raffle is ", TextColors.GOLD, user.getName(),
-                                TextColors.YELLOW, "!"));
-                    }
-                });
+                if(pluginConfig.isBroadcastWinner()) {
+                    Sponge.getServer().getBroadcastChannel().send(getInstance(), winnerText);
+                } else {
+                    fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(winnerText));
+                }
             });
         } else {
-            fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(Text.of(TextColors.YELLOW,
-                    "The ", TextColors.GOLD, raffle.getName(),
-                    TextColors.YELLOW, " raffle has no winner!")));
+
+            Text noWinnerText = buildRaffleNoWinnerMsg(raffleResult);
+
+            if(pluginConfig.isBroadcastWinner()) {
+                Sponge.getServer().getBroadcastChannel().send(getInstance(), noWinnerText);
+            } else {
+                fetchOnlineRafflePlayers(raffle).forEach(player -> player.sendMessage(noWinnerText));
+            }
         }
     }
 
@@ -187,6 +186,33 @@ public class CommandRaffle {
                     .ifPresent(user -> user.getPlayer().ifPresent(playerSet::add));
         }
         return playerSet;
+    }
+
+    public Text buildRaffleCreateMsg(Raffle raffle) {
+        String raffleCreateMessage = pluginConfig.getCreateBroadcast();
+        raffleCreateMessage = raffleCreateMessage.replaceAll("\\{Raffle_Name}", raffle.getName());
+
+        return TextSerializers.FORMATTING_CODE.deserialize(raffleCreateMessage);
+    }
+
+    private Text buildRaffleWinnerMsg(RaffleResult raffleResult) {
+        String raffleWinnerMessage = pluginConfig.getWinnerMessage();
+
+        UserStorageService userStorageService = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+        String winnerName = userStorageService.get(raffleResult.getWinner().get()).get().getName();
+
+        raffleWinnerMessage = raffleWinnerMessage
+                .replaceAll("\\{Raffle_Name}", raffleResult.getRaffle().getName())
+                .replaceAll("\\{Winner}", winnerName);
+
+        return TextSerializers.FORMATTING_CODE.deserialize(raffleWinnerMessage);
+    }
+
+    private Text buildRaffleNoWinnerMsg(RaffleResult raffleResult) {
+        String raffleNoWinnerMessage = pluginConfig.getNoWinnerMessage();
+        raffleNoWinnerMessage = raffleNoWinnerMessage.replaceAll("\\{Raffle_Name}", raffleResult.getRaffle().getName());
+
+        return TextSerializers.FORMATTING_CODE.deserialize(raffleNoWinnerMessage);
     }
 
     private class RaffleUpdateTask implements Consumer<Task> {
