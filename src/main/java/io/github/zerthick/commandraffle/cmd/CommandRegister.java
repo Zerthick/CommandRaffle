@@ -41,7 +41,7 @@ public class CommandRegister {
                         .valueFlag(GenericArguments.string(CommandArgs.RAFFLE_DESC), "d", "-desc")
                         .buildWith(GenericArguments.seq(GenericArguments.string(CommandArgs.RAFFLE_NAME),
                                 GenericArguments.string(CommandArgs.RAFFLE_CMD),
-                                GenericArguments.duration(CommandArgs.RAFFLE_DURATION))))
+                                GenericArguments.string(CommandArgs.RAFFLE_DURATION))))
                 .build();
 
         CommandSpec buy = CommandSpec.builder()
