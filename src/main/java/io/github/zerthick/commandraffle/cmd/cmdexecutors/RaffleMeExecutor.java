@@ -56,7 +56,7 @@ public class RaffleMeExecutor extends AbstractCmdExecutor {
                         Text titleText = Text.builder()
                                 .append(Text.of(TextColors.GOLD, raffle.getName()))
                                 .onHover(TextActions.showText(raffle.getDescription()))
-                                .onShiftClick(TextActions.insertText("/raffle buy " + raffle.getName() + " "))
+                                .onClick(TextActions.suggestCommand("/raffle buy " + raffle.getName() + " "))
                                 .build();
                         Text ticketsText = Text.of(raffle.getTicketCount(player));
 

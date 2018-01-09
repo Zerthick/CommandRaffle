@@ -19,15 +19,19 @@
 
 package io.github.zerthick.commandraffle.cmd.cmdexecutors;
 
+import com.google.common.collect.ImmutableList;
 import io.github.zerthick.commandraffle.CommandRaffle;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.List;
+
 public class RaffleExecutor extends AbstractCmdExecutor {
+
     public RaffleExecutor(CommandRaffle plugin) {
         super(plugin);
     }
@@ -35,12 +39,44 @@ public class RaffleExecutor extends AbstractCmdExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) {
 
-        PluginContainer container = plugin.getInstance();
+        Text raffle = Text.builder("/raffle")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle"))
+                .build();
 
-        src.sendMessage(Text.of(TextColors.GOLD, container.getName(),
-                TextColors.YELLOW, " version: ", TextColors.GOLD,
-                container.getVersion().orElse(""), TextColors.YELLOW, " by ",
-                TextColors.GOLD, "Zerthick"));
+        Text raffleInfo = Text.builder("/raffle info")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle info"))
+                .build();
+
+        Text raffleList = Text.builder("/raffle list")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle list"))
+                .build();
+
+        Text raffleMe = Text.builder("/raffle me")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle me"))
+                .build();
+
+        Text raffleDraw = Text.builder("/raffle draw")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle draw"))
+                .build();
+
+        Text raffleCancel = Text.builder("/raffle cancel")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle cancel"))
+                .build();
+
+        Text raffleBuy = Text.builder("/raffle buy")
+                .color(TextColors.GOLD)
+                .onClick(TextActions.suggestCommand("/raffle buy"))
+                .build();
+
+        List<Text> content = ImmutableList.of(
+                Text.of(TextColors.GOLD, "")
+        );
 
         return CommandResult.success();
     }

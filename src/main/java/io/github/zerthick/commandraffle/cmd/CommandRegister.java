@@ -74,8 +74,13 @@ public class CommandRegister {
                 .executor(new RaffleMeExecutor(plugin))
                 .build();
 
-        CommandSpec raffle = CommandSpec.builder()
+        CommandSpec info = CommandSpec.builder()
                 .permission("commandraffle.command.info")
+                .executor(new RaffleInfoExecutor(plugin))
+                .build();
+
+        CommandSpec raffle = CommandSpec.builder()
+                .permission("commandraffle.command.help")
                 .executor(new RaffleExecutor(plugin))
                 .child(me, "me")
                 .child(list, "list", "ls")
@@ -83,6 +88,7 @@ public class CommandRegister {
                 .child(cancel, "cancel", "cn")
                 .child(buy, "buy", "by")
                 .child(create, "create", "cr")
+                .child(info, "info", "if")
                 .build();
 
         Sponge.getCommandManager().register(plugin, raffle, "raffle", "rf");

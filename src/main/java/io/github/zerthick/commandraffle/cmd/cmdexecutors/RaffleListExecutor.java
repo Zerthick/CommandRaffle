@@ -92,7 +92,7 @@ public class RaffleListExecutor extends AbstractCmdExecutor {
                         Text titleText = Text.builder()
                                 .append(Text.of(TextColors.GOLD, raffle.getName()))
                                 .onHover(TextActions.showText(raffle.getDescription()))
-                                .onShiftClick(TextActions.insertText("/raffle buy " + raffle.getName() + " "))
+                                .onClick(TextActions.suggestCommand("/raffle buy " + raffle.getName() + " "))
                                 .build();
                         Text ticketsText = Text.of(raffle.getAvailableTickets(), " at ", dc.format(BigDecimal.valueOf(raffle.getTicketPrice())), "/ticket");
                         Text timeText = RaffleTimeFormatter.formatTimeText(raffle, now);
