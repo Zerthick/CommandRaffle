@@ -30,7 +30,7 @@ public class CommandRegister {
     public static void registerCommands(CommandRaffle plugin) {
 
         CommandSpec create = CommandSpec.builder()
-                .permission("commandraffle.command.create")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_CREATE)
                 .executor(new RaffleCreateExecutor(plugin))
                 .arguments(GenericArguments.flags()
                         .flag("r", "-repeat")
@@ -45,42 +45,42 @@ public class CommandRegister {
                 .build();
 
         CommandSpec buy = CommandSpec.builder()
-                .permission("commandraffle.command.buy")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_BUY)
                 .executor(new RaffleBuyExecutor(plugin))
                 .arguments(GenericArguments.string(CommandArgs.RAFFLE_NAME),
                         GenericArguments.integer(CommandArgs.RAFFLE_TICKET_AMOUNT))
                 .build();
 
         CommandSpec cancel = CommandSpec.builder()
-                .permission("commandraffle.command.cancel")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_CANCEL)
                 .executor(new RaffleCancelExecutor(plugin))
                 .arguments(GenericArguments.string(CommandArgs.RAFFLE_NAME))
                 .build();
 
         CommandSpec draw = CommandSpec.builder()
-                .permission("commandraffle.command.draw")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_DRAW)
                 .executor(new RaffleDrawExecutor(plugin))
                 .arguments(GenericArguments.string(CommandArgs.RAFFLE_NAME))
                 .build();
 
         CommandSpec list = CommandSpec.builder()
-                .permission("commandraffle.command.list")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_LIST)
                 .executor(new RaffleListExecutor(plugin))
                 .arguments(GenericArguments.optional(GenericArguments.string(CommandArgs.RAFFLE_NAME)))
                 .build();
 
         CommandSpec me = CommandSpec.builder()
-                .permission("commandraffle.command.me")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_ME)
                 .executor(new RaffleMeExecutor(plugin))
                 .build();
 
         CommandSpec info = CommandSpec.builder()
-                .permission("commandraffle.command.info")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_INFO)
                 .executor(new RaffleInfoExecutor(plugin))
                 .build();
 
         CommandSpec raffle = CommandSpec.builder()
-                .permission("commandraffle.command.help")
+                .permission(Permissions.COMMANDRAFFLE_COMMAND_HELP)
                 .executor(new RaffleExecutor(plugin))
                 .child(me, "me")
                 .child(list, "list", "ls")
