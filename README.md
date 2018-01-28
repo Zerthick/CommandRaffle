@@ -36,7 +36,7 @@ CommmandRaffle allows you to set up one-time or repeating raffles of a command o
  
    * `<Raffle>` - This is the name of the raffle which will be displayed in the raffle listing
    * `<Command>` - This is the command that will be executed if the raffle has a winner, you do **not** need to includ the `/` at the begining of the command. In addition you can use `{Winner}` inside the command to get the name of the winning player. Ex: `give {Winner} diamond 5` In the case that the winner is not currenlty online, execution of the command will be delayed until they are online once again.
-   * `<Duraion>` - The amount of time until the raffle is drawn, it is specified in `DdHhMmSs` format. Ex: `5d4h3m2s` Would be 5 days, 4 hours, 3 mins, 2 seconds. Any of the time sections can be ommitted.
+   * `<Duration>` - The amount of time until the raffle is drawn, it is specified in `DdHhMmSs` format. Ex: `5d4h3m2s` Would be 5 days, 4 hours, 3 mins, 2 seconds. Any of the time sections can be ommitted.
  
 ### Flags (Optional)
   * `--repeating` - If present this will cause the raffle to reset and repeat once a winner is drawn (Alias: -r)
