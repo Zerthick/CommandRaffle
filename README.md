@@ -30,21 +30,21 @@ CommmandRaffle allows you to set up one-time or repeating raffles of a command o
  
  ## Creating Raffles
  
- The `/raffle create` command has several customization options which are summarized below:
+ The `/raffle create` command has several customization options, summarized below:
  
- ### Arguments (Not Optional)
+ ### Required Arguments
  
    * `<Raffle>` - This is the name of the raffle which will be displayed in the raffle listing
-   * `<Command>` - This is the command that will be executed if the raffle has a winner, you do **not** need to includ the `/` at the begining of the command. In addition you can use `{Winner}` inside the command to get the name of the winning player. Ex: `give {Winner} diamond 5` In the case that the winner is not currenlty online, execution of the command will be delayed until they are online once again.
+   * `<Command>` - This is the command that will be executed if the raffle has a winner. Do **not** need to includ the `/` at the begining of the command. In addition you can use `{Winner}` inside the command to get the name of the winning player. Ex: `give {Winner} diamond 5` In the case that the winner is not currenlty online, execution of the command will be delayed until they are online once again.
    * `<Duration>` - The amount of time until the raffle is drawn, it is specified in `DdHhMmSs` format. Ex: `5d4h3m2s` Would be 5 days, 4 hours, 3 mins, 2 seconds. Any of the time sections can be ommitted.
  
-### Flags (Optional)
-  * `--repeating` - If present this will cause the raffle to reset and repeat once a winner is drawn (Alias: -r)
-  * `--numtickets <Amount>` - The number of tickets in this raffle if different from the default (Alias: -n)
-  * `--ticketcost <Cost>` - The cost of purchasing one ticket in this raffle if different from the default (Alias: -c)
-  * `--ticketlimit <Limit>` - The limit on the number of tickets a player can purchase in the raffle (Alias: -l)
-  * `--perm <Node>` - A permission node players must have in order to enter the raffle (Alias: -p)
-  * `--desc <Description>` - A description of the raffle, supports & color codes. (Alias: -d)
+### Optional Flags
+  * `--repeating` - Will cause the raffle to reset and repeat once a winner is drawn (Alias: `-r`)
+  * `--numtickets <Amount>` - Total number of tickets in raffle (Default: 100 tickets) (Alias: `-n`)
+  * `--ticketcost <Cost>` - The cost of purchasing one ticket in this raffle (Default: 10.0) (Alias: `-c`)
+  * `--ticketlimit <Limit>` - The limit on the number of tickets a player can purchase in the raffle (Default: Unlimited) (Alias: `-l`)
+  * `--perm <Node>` - A permission node players must have in order to enter the raffle (Alias: `-p`)
+  * `--desc <Description>` - Description of the raffle. Supports ["&" formatting and color codes](http://www.minecraftforum.net/forums/support/server-support/tutorials-and-faqs/1940467-bukkit-colour-codes) (Alias: `-d`)
   
 ## Configuring CommandRaffle
 
