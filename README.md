@@ -44,7 +44,7 @@ CommmandRaffle allows you to set up one-time or repeating raffles of a command o
   * `--ticketcost <Cost>` - The cost of purchasing one ticket in this raffle (Default: 10.0) (Alias: `-c`)
   * `--ticketlimit <Limit>` - The limit on the number of tickets a player can purchase in the raffle (Default: Unlimited) (Alias: `-l`)
   * `--perm <Node>` - A permission node players must have in order to enter the raffle (Alias: `-p`)
-  * `--desc <Description>` - Description of the raffle. Supports [`&` formatting and color codes](http://www.minecraftforum.net/forums/support/server-support/tutorials-and-faqs/1940467-bukkit-colour-codes) (Alias: `-d`)
+  * `--desc <Description>` - Description of the raffle. Supports ["&" formatting and color codes](http://www.minecraftforum.net/forums/support/server-support/tutorials-and-faqs/1940467-bukkit-colour-codes) (Alias: `-d`)
   
 ## Configuring CommandRaffle
 
